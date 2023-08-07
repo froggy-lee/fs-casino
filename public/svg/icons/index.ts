@@ -14,6 +14,7 @@ import UserHeaderIcon from "./user-header";
 import PasswordInputIcon from "./password-input";
 import UserInputIcon from "./user-input";
 import CloseIcon from "./close-modal";
+import NoticeIcon from "./notice-icon";
 
 export {
   SpeakerIcon,
@@ -32,4 +33,5 @@ export {
   PasswordInputIcon,
   UserInputIcon,
   CloseIcon,
+  NoticeIcon,
 };

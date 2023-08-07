@@ -23,6 +23,6 @@
       "@/*": ["./src/*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "public/svg/icons/betting-history.js"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "public/svg/icons/betting-history.js", "src/modules/Home/BannerSection/index.tsx"],
   "exclude": ["node_modules"]
 }

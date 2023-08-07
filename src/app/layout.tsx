@@ -7,9 +7,10 @@ import ReactQuery from "../lib/react-query";
 import StyledComponentsRegistry from "@/lib/styledComponents";
 import ReduxProvider from "@/lib/redux";
 import Header from "@/components/Layout/Header";
-import NavBar from "@/components/Layout/Navbar";
 import { GlobalStyles } from "@/styles/theme.config";
 import ModalPage from "@/modules/ModalPage";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
 
 const DynamicBootstrap = dynamic(
   () => require("bootstrap/dist/js/bootstrap.min.js"),
