@@ -7,6 +7,8 @@ import ReactQuery from "../lib/react-query";
 import StyledComponentsRegistry from "@/lib/styledComponents";
 import ReduxProvider from "@/lib/redux";
 import Header from "@/components/Layout/Header";
+import Footer from "@/components/Layout/Footer";
+import LayOutPage from "@/components/Layout";
 import { GlobalStyles } from "@/styles/theme.config";
 import ModalPage from "@/modules/ModalPage";
 import "slick-carousel/slick/slick.css";
@@ -37,8 +39,7 @@ export default function RootLayout({
           <ReduxProvider>
             <ReactQuery>
               <ModalPage />
-              <Header />
-              {children}
+              <LayOutPage>{children}</LayOutPage>
             </ReactQuery>
           </ReduxProvider>
         </StyledComponentsRegistry>

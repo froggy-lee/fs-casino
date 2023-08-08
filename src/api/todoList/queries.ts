@@ -1,4 +1,4 @@
-import { useQuery } from "react-query";
+import { useQuery } from "@tanstack/react-query";
 import { getTodoListRequest } from "./request";
 
 export const useGetTodoList = (page: Number, limit: Number, option?: any) => {
@@ -8,3 +8,10 @@ export const useGetTodoList = (page: Number, limit: Number, option?: any) => {
     option
   );
 };
+
+// export const useGetTodoList = (page: Number, limit: Number, option?: any) => {
+//   return useQuery({
+//     queryKey: ["getTodoList", page, limit],
+//     queryFn: () => getTodoListRequest(page, limit),
+//   });
+// };

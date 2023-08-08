@@ -5,15 +5,15 @@ import { ITodo } from "@/api/todoList/types";
 
 function TodoList() {
   const [page, setPage] = useState<number>(1);
-  const limit: Number = 5;
-  const { data, isLoading } = useGetTodoList(page, limit);
+  const limit: number = 5;
+  const { data, isLoading } = useGetTodoList(page, limit, {
+    keepPreviousData: true,
+  });
 
   const handlePagination = (index: number) => {
     if (page === 1 && index < 0) return;
     setPage(page + index);
   };
-
-  const handleClick = () => console.log(1);
 
   return (
     <>
