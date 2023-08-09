@@ -1,12 +1,21 @@
-import React, { useState } from "react";
+"use client";
+
+import React, { useState, useCallback } from "react";
 import Image from "next/image";
 import * as S from "./styles";
 import { PasswordInputIcon, UserInputIcon } from "../../../../public/svg/icons";
 import ModalWrapper from "../ModalWrapper";
 import { useDispatch } from "react-redux";
-import { showLoginModal } from "@/store/slice/modal";
+import { showLoginModal, showRegisterModal } from "@/store/slice/modal";
+import { toggleLoadingPage } from "@/store/slice/loading";
+import { handleAuth } from "@/store/slice/auth";
+import { handleUpdateUser } from "@/store/slice/user";
 import { useFormik } from "formik";
 import * as Yup from "yup";
+import { setLocalStorageUser } from "@/utils/localStorage";
+import { loginRequest } from "@/api/Auth/request";
+import { getMeRequest } from "@/api/User/request";
+import { useMutation } from "@tanstack/react-query";
 
 interface User {
   username: string;
@@ -16,6 +25,29 @@ interface User {
 function LoginModal() {
   const [showPass, setShowPass] = useState<boolean>(false);
   const dispatch = useDispatch();
+  const { mutate: getMeAction } = useMutation({
+    mutationFn: () => getMeRequest(),
+    onSuccess: (data) => {
+      dispatch(handleUpdateUser(data?.data));
+      dispatch(toggleLoadingPage());
+      dispatch(showLoginModal(false));
+      dispatch(handleAuth(true));
+    },
+    onError: () => {
+      dispatch(toggleLoadingPage());
+    },
+  });
+  const { mutate: loginAction } = useMutation({
+    mutationFn: (data: User) => loginRequest(data),
+    onSuccess: ({ data }) => {
+      setLocalStorageUser(data?.id, data?.token);
+      getMeAction();
+    },
+    onError: (error) => {
+      dispatch(toggleLoadingPage());
+      console.log(error);
+    },
+  });
   const styles = {
     width: "900px",
     height: "550px",
@@ -35,13 +67,22 @@ function LoginModal() {
 
   const { values, errors, handleChange } = formik;
 
-  const handleToggle = () => dispatch(showLoginModal(false));
+  const handleToggle = useCallback(
+    () => dispatch(showLoginModal(false)),
+    [dispatch]
+  );
 
   const handleShowPassword = () => setShowPass(!showPass);
 
   const handleLogin = async (value: User) => {
-    console.log(value);
+    dispatch(toggleLoadingPage());
+    loginAction(value);
   };
+
+  const handleShowRegisterModal = useCallback(() => {
+    dispatch(showLoginModal(false));
+    dispatch(showRegisterModal(true));
+  }, [dispatch]);
 
   return (
     <ModalWrapper onToggle={handleToggle} styles={styles}>
@@ -98,7 +139,8 @@ function LoginModal() {
             </S.ButtonGuest>
           </form>
           <div className="text-center mt-3">
-            Don&apos;t have an account?<S.Register>Register</S.Register>
+            Don&apos;t have an username?
+            <S.Register onClick={handleShowRegisterModal}>Register</S.Register>
           </div>
         </div>
       </article>

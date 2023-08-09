@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useCallback } from "react";
 import * as S from "./styles";
 import {
   LogoutIcon,
@@ -10,27 +10,71 @@ import {
 } from "../../../../../public/svg/icons";
 import { useSelector, useDispatch } from "react-redux";
 import { showRegisterModal, showLoginModal } from "@/store/slice/modal";
+import { selectUserInfo, handleUpdateUser } from "@/store/slice/user";
+import { selectIsAuth, handleAuth } from "@/store/slice/auth";
+import { toggleLoadingPage } from "@/store/slice/loading";
+import { getMeRequest } from "@/api/User/request";
+import { LocalStorage } from "@/utils/localStorage";
+import { useMutation } from "@tanstack/react-query";
+import { useRouter } from "next/navigation";
 
 function Auth() {
-  const [auth, setAuth] = useState(false);
-  const handleAuth = () => setAuth(!auth);
-
+  const auth = useSelector(selectIsAuth);
+  const userInfo = useSelector(selectUserInfo);
   const dispatch = useDispatch();
+  const router = useRouter();
 
-  const HandleShowLoginModal = () => {
-    dispatch(showLoginModal(true));
+  const handleShowModal = (key: string) => {
+    key === "login"
+      ? dispatch(showLoginModal(true))
+      : dispatch(showRegisterModal(true));
   };
 
-  const handleShowRegisterModal = () => dispatch(showRegisterModal(true));
+  const { mutate: getMeAction } = useMutation({
+    mutationFn: () => getMeRequest(),
+    onSuccess: (data) => {
+      dispatch(handleUpdateUser(data?.data));
+      dispatch(toggleLoadingPage());
+      dispatch(showLoginModal(false));
+      dispatch(handleAuth(true));
+    },
+    onError: () => {
+      dispatch(toggleLoadingPage());
+    },
+  });
+
+  const handleLogout = useCallback(() => {
+    LocalStorage.clear();
+    router.push("/");
+    window.location.reload();
+  }, [router]);
+
+  useEffect(() => {
+    const userID = LocalStorage.get("userId");
+    const userToken = LocalStorage.get("userToken");
+    const checkAuth = LocalStorage.get("auth");
+    checkAuth && dispatch(handleAuth(true));
+    if (userID && userToken) {
+      dispatch(toggleLoadingPage());
+
+      getMeAction();
+    }
+  }, [dispatch, getMeAction]);
 
   return (
     <>
       {!auth ? (
         <article className="row">
-          <S.Button className="col px-4" onClick={HandleShowLoginModal}>
+          <S.Button
+            className="col px-4"
+            onClick={() => handleShowModal("login")}
+          >
             Login
           </S.Button>
-          <S.Button className="col px-4" onClick={handleShowRegisterModal}>
+          <S.Button
+            className="col px-4"
+            onClick={() => handleShowModal("register")}
+          >
             Register
           </S.Button>
         </article>
@@ -40,7 +84,7 @@ function Auth() {
             <div className="d-flex align-items-center">
               <TotalIcon /> Total Balance
             </div>
-            <S.Money> 300000 won</S.Money>
+            <S.Money> {userInfo?.money} won</S.Money>
           </div>
           <S.Betting className="px-2 d-flex align-items-center">
             <BettingIcon />
@@ -48,9 +92,9 @@ function Auth() {
           </S.Betting>
           <div className="px-2 d-flex align-items-center">
             <UserHeaderIcon />
-            User Name
+            {userInfo?.username}
           </div>
-          <div onClick={handleAuth} className="ms-2">
+          <div className="ms-2" onClick={handleLogout}>
             <LogoutIcon />
           </div>
         </article>
