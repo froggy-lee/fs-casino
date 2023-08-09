@@ -106,9 +106,20 @@ input {
   font-style: normal;
   font-weight: 700;
   color:  #545454;
-  @media (max-width: 768px) {
-    font-size: 20px;
 }
+
+.title-page {
+  color: var(--pink);
+  font-size: 32px;
+  font-weight: 700;
+}
+@media (max-width: 768px) {
+  .title-section {
+    font-size: 20px;
+  }
+  .title-page {
+    font-size: 25px;
+  }
 }
 
 .primary-button {

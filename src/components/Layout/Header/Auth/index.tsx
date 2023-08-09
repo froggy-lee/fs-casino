@@ -44,13 +44,16 @@ function Auth() {
   });
 
   const handleLogout = useCallback(() => {
-    LocalStorage.clear();
     router.push("/");
-    window.location.reload();
+    LocalStorage.clear();
+    router.refresh();
+    setTimeout(() => {
+      location.reload();
+    }, 500);
   }, [router]);
 
   useEffect(() => {
-    const userID = LocalStorage.get("userId");
+    const userID = LocalStorage.get("username");
     const userToken = LocalStorage.get("userToken");
     const checkAuth = LocalStorage.get("auth");
     checkAuth && dispatch(handleAuth(true));

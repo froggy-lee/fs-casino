@@ -54,7 +54,7 @@ export const setLocalStorageUser = (id: string, token: string) => {
       return;
     }
 
-    window.localStorage.setItem("userId", JSON.stringify(id));
+    window.localStorage.setItem("username", JSON.stringify(id));
     window.localStorage.setItem("userToken", JSON.stringify(token));
   }
 };

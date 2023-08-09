@@ -63,7 +63,7 @@ export const menu = [
     icon: <UserIcon />,
     key: "user",
     name: "User Info",
-    router: "",
+    router: "/profile",
   },
   {
     url: "",

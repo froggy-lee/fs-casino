@@ -40,7 +40,7 @@ function LoginModal() {
   const { mutate: loginAction } = useMutation({
     mutationFn: (data: User) => loginRequest(data),
     onSuccess: ({ data }) => {
-      setLocalStorageUser(data?.id, data?.token);
+      setLocalStorageUser(data?.username, data?.token);
       getMeAction();
     },
     onError: (error) => {
